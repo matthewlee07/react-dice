@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import "./RollDice.css";
 import Die from "./Die";
 
@@ -9,7 +9,7 @@ class RollDice extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { die1: "one", die2: "one" };
+    this.state = { die1: "one", die2: "one", rolling: false };
   }
   //this syntax automatically binds roll to instance
   roll = () => {
@@ -21,16 +21,24 @@ class RollDice extends Component {
       Math.floor(Math.random() * this.props.sides.length)
     ];
     // set state with new rolls
-    this.setState({ die1: newDie1, die2: newDie2 });
+    this.setState({ die1: newDie1, die2: newDie2, rolling: true });
+    // wait one second, then set rolling:false again
+    setTimeout(() => {
+      this.setState({ rolling: false });
+    }, 1000);
   };
 
   render() {
     return (
-      <Fragment className="RollDice">
-        <Die face={this.state.die1} />
-        <Die face={this.state.die2} />
-        <button onClick={this.roll}>Roll Dice!</button>
-      </Fragment>
+      <div className="RollDice">
+        <div className="RollDice-container">
+          <Die face={this.state.die1} rolling={this.state.rolling} />
+          <Die face={this.state.die2} rolling={this.state.rolling} />
+        </div>
+        <button onClick={this.roll} disabled={this.state.rolling}>
+          {this.state.rolling ? "Rolling..." : "Roll Dice!"}
+        </button>
+      </div>
     );
   }
 }
